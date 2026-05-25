@@ -1,30 +1,117 @@
-[![CICD](https://github.com/amigoscode/spring-boot-fullstack-professional/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/amigoscode/spring-boot-fullstack-professional/actions/workflows/deploy.yml)
+🚀 Project: Worker Attendance & Overtime Management System
+📌 Overview
 
-https://amigoscode.com/p/full-stack-spring-boot-react
+This project implements a backend system for managing construction site workers, their attendance, overtime calculation, and settlement workflows.
 
-![Cover](https://user-images.githubusercontent.com/40702606/111074799-bdfbcf00-84dc-11eb-98c0-d40a99aa0da7.png)
+It is built using Java Spring Boot, with PostgreSQL (Supabase) for persistence and Redis for real-time caching.
 
-# Course Description
-Spring Boot allows to take an idea/prototype and turn it into a real thing in matters minutes hours of months and years. A lot of companies use Spring Boot because it's easy to setup, learn and write code very fast without having to setup the low level platform code. Recently, Netflix has decided to switch their entire backend to Spring Boot. This shows that Spring Boot is a must if you are or want to become a software engineer in the Java world.
-This course teaches how to build a full stack application from the ground up and touches on very import concepts used in real live software development. Concepts such as:
+⚙️ Tech Stack
+Java 17
+Spring Boot
+Spring Data JPA (Hibernate)
+PostgreSQL (Supabase)
+Redis (Caching)
+Maven
 
-- Spring Boot Backend API
-- Frontend with React.js Hooks and Functions Components
-- Maven Build Tool
-- Databases using Postgres on Docker
-- Spring Data JPA
-- Server and Client Side Error Handling
-- Packaging applications for deployment using Docker and Jib
-- AWS RDS & Elastic Beanstalk
-- Software Deployment Automation with Github Actions
-- Software Deployment Monitoring with Slack
-- Unit and Integration Testing
+📦 Setup Instructions
+1. Clone Repo
+git clone <your-repo-url>
+cd <project>
 
-This course focus on teaching you the process needed to build your own apps and deploy to real users using real software development techniques and skills. The skills gained at the end of this can be applied immediately on your own projects, university projects and at your work place.
+2. PostgreSQL Setup
 
-Have you got what it takes to become a professional software engineer? Cool I'll see you inside. https://amigoscode.com/p/full-stack-spring-boot-react
+Update application.properties:
 
-![Screenshot 2021-03-11 at 22 56 19](https://user-images.githubusercontent.com/40702606/111074929-5003d780-84dd-11eb-8284-e7c92c7e2905.png)
+spring.datasource.url=jdbc:postgresql://localhost:5432/your_db
+spring.datasource.username=postgres
+spring.datasource.password=your_password
 
-<img width="773" alt="Screenshot 2021-03-12 at 20 48 48" src="https://user-images.githubusercontent.com/40702606/111074947-627e1100-84dd-11eb-9d3f-85fdbf23e290.png">
+3. Redis Setup
+   
+Run Redis locally:
+sudo service redis-server start
 
+🧩 Features Implemented
+
+👷 Worker Management
+Create, delete workers
+Validation and duplicate checks
+
+🏗️ Site Management
+Create and manage construction sites
+
+⏱️ Attendance System
+Clock-in / Clock-out
+Prevent duplicate clock-ins
+Real-time active workers via Redis
+
+💰 Overtime Engine
+Auto calculation after 8 hours
+1.5x for first 2 hours
+2x beyond that
+Monthly cap: 60 hours
+
+💸 Overtime Settlement
+Monthly settlement API
+Atomic transactions (all-or-nothing)
+Prevents partial updates
+Cannot settle current month
+
+⚡ Redis Caching
+Active workers stored in Redis
+TTL: 16 hours (auto-expiry)
+Cache invalidation on clock-out
+
+🛡️ Fault Tolerance
+Redis failure handled gracefully
+Application works without Redis
+
+
+🧪 APIs (Postman Tested)
+
+Attendance
+
+POST /api/v1/attendance/clock-in
+
+POST /api/v1/attendance/clock-out
+
+GET /api/v1/attendance/active
+
+GET /api/v1/attendance/log
+
+
+Overtime
+
+POST /api/v1/overtime/settle/{workerId}?month=YYYY-MM
+
+🐞 Ticket Fixes
+
+LF-201	CORS configured
+
+LF-202	Redis failure handled gracefully
+
+LF-203	Pagination + N+1 fixed using JOIN FETCH
+
+LF-204	Atomic settlement using @Transactional + event listener
+
+LF-205	HikariCP connection pool tuning
+
+🤖 AI Usage
+
+AI tools (ChatGPT, Copilot) were used for:
+
+Designing entity relationships
+Structuring service-layer logic
+Debugging errors and edge cases
+
+Manual validation was done to:
+
+Verify business rules
+Prevent incorrect logic (AI hallucination)
+Ensure alignment with assignment requirements
+
+💡 Design Decisions
+Used Redis for real-time active workers to reduce DB load
+Implemented transactional boundaries for settlement to ensure data integrity
+Applied JOIN FETCH to avoid N+1 query problem
+Separated business logic from controller for clean architecture
